@@ -1,95 +1,90 @@
 import mongoose from 'mongoose';
+
 const subscriptionSchema = new mongoose.Schema({
     name:{
-        type:String,
+        type: String,
         required: [true, 'Subscription name is required'],
         trim: true,
         minLength: 6,
         maxLength: 100
     },
-    email:{
-        type:String,
-        required:true,
-        trim:true,
-        unique:true,
-        lowercase:true
-    },
     price:{
-        type:Number,
-        required:true,
-        min:[0, 'Price must be greater than 0'],
-        max:[1000, 'Price must be less than 1000']
+        type: Number,
+        required: true,
+        min: [0, 'Price must be greater than 0'],
+        max: [1000, 'Price must be less than 1000']
     },
     currency:{
-        type:String,
-        enum:['USD', 'RWF', 'GBP', 'EUR'],
-        default:'USD'
+        type: String,
+        enum: ['USD', 'RWF', 'GBP', 'EUR'],
+        default: 'USD'
     },
-    frequency: {
-        type:String,
-        enum:['daily', 'weekly', 'monthly', 'yearly']
+    frequency:{
+        type: String,
+        enum: ['daily', 'weekly', 'monthly', 'yearly']
     },
     category:{
-        type:String,
-        enum:['Entertainment', 'Sports', 'Finance', 'Education', 'Health', 'Politics','...']
+        type: String,
+        enum: ['Entertainment', 'Sports', 'Finance', 'Education', 'Health', 'Politics']
     },
     status:{
-        type:String,
-        enum:['active', 'cancelled', 'expired'],
-        default:'active'
+        type: String,
+        enum: ['active', 'cancelled', 'expired'],
+        default: 'active'
     },
     paymentMethod:{
-        type:String,
-        required:true,
-        trim:true
+        type: String,
+        required: true,
+        trim: true
     },
     startDate:{
-        type:Date,
-        required:true,
+        type: Date,
+        required: true,
         validate:{
-            validator: function(value) {
-                return value <= new Date()
+            validator: function(value) {   // ✅ regular function
+                return value <= new Date();
             },
-                message:'Starting date must be in the past',           
+            message: 'Starting date must be in the past'
         }
     },
-        renewalDate:{
-        type:Date,
-        required:true,
+    renewalDate:{
+        type: Date,
         validate:{
-            validator:(value) => value > this.startDate,
-                message:'Renewal date must be after the starting date',           
+            validator: function(value) {   // ✅ regular function
+                return value > this.startDate;
+            },
+            message: 'Renewal date must be after the starting date'
         }
     },
-    User:{
-        type:mongoose.Schema.Types.ObjectId,
-        required:true,
-        ref:'User',
-        index:true
+    user:{                                 // ✅ lowercase to match controller
+        type: mongoose.Schema.Types.ObjectId,
+        required: true,
+        ref: 'User',
+        index: true
     }
-}, 
+},
 {
-    timestamps:true
+    timestamps: true
 });
 
-//Auto calculating renewal date
-subscriptionSchema.pre('save', (next)=>{
-    if(!this.renewalDate){
+// ✅ Regular function so `this` works correctly
+// Option 1 - rename parameter to avoid confusion
+subscriptionSchema.pre('save', function(next) {
+    if(!this.renewalDate) {
         const renewalPeriods = {
-            daily:1,
-            weekly:7,
-            monthly:30,
-            yearly:365
+            daily: 1,
+            weekly: 7,
+            monthly: 30,
+            yearly: 365
         };
-            this.renewalDate = new Date(this.startDate);
-            this.renewalDate.setDate(this.renewalDate.getDate() + renewalPeriods[this.frequency]);
+        this.renewalDate = new Date(this.startDate);
+        this.renewalDate.setDate(this.renewalDate.getDate() + renewalPeriods[this.frequency]);
     }
-    if(this.renewalDate < new Date()){
+    if(this.renewalDate < new Date()) {
         this.status = 'expired';
     }
-    next();
+
 });
 
 const Subscription = mongoose.model('Subscription', subscriptionSchema);
 export default Subscription;
-
