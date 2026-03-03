@@ -10,9 +10,8 @@ export const signUp = async (req, res, next) => {
     // const session = await mongoose.startSession();
     // session.startTransaction();
 
+    const { name, email, password } = req.body;
     try {
-        const { name, email, password } = req.body;
-
         if (!name || !email || !password) {
             const error = new Error('Name, email and password are required');
             error.statusCode = 400;
@@ -52,7 +51,7 @@ export const signUp = async (req, res, next) => {
                 }
             }
         });
-        await sendWelcomeEmail(email, User);
+        await sendWelcomeEmail(email, name);
 
 
     } catch (error) {
