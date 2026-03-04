@@ -4,7 +4,8 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { JWT_EXPIRES_IN, JWT_SECRET } from '../config/env.js';
 
-import sendWelcomeEmail from '../utils/emails.js';
+import sendWelcomeEmail from '../utils/emails1.js';
+import sendRenewalReminderEmail from '../utils/emails2.js';
 
 export const signUp = async (req, res, next) => {
     // const session = await mongoose.startSession();
@@ -52,6 +53,7 @@ export const signUp = async (req, res, next) => {
             }
         });
         await sendWelcomeEmail(email, name);
+        await sendRenewalReminderEmail(email, name, subscription);
 
 
     } catch (error) {

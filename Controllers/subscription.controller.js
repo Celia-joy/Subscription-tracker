@@ -1,10 +1,20 @@
 import Subscription from '../Models/subscription.model.js';
+import {Client} from '@upstash/qstash';
 
 export const createSubscription = async (req, res, next)=>{
     try{
         const subscription = await Subscription.create({
             ...req.body,
             user: req.user._id
+        });
+        const client = new Client({
+            token:process.env.QSTASH_TOKEN
+        });
+        await client.publishJSON({
+            url:`${process.env.SERVER_URL}/api/v1/workflow/subscription/reminder`,
+            body:{
+                subscriptionId: subscription._id
+            }
         });
         res.status(201).json({
             success: true,

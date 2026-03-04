@@ -1,6 +1,6 @@
 import transporter from '../config/mailer.js';
 
-const sendWelcomeEmail = async (email, name) => {
+export const sendWelcomeEmail = async (email, name) => {
   const mailerOptions = {
     from: process.env.EMAIL_USER,
     to: email,
@@ -33,5 +33,4 @@ const sendWelcomeEmail = async (email, name) => {
     console.log(`The email was not sent due to the following errors:\n ${error}`);
   }
 };
-
 export default sendWelcomeEmail;

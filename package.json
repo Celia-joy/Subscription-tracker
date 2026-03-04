@@ -10,6 +10,8 @@
   "dependencies": {
     "@arcjet/inspect": "^1.1.0",
     "@arcjet/node": "^1.1.0",
+    "@upstash/qstash": "^2.9.0",
+    "@upstash/workflow": "^1.1.1",
     "bcryptjs": "^3.0.3",
     "cookie-parser": "~1.4.4",
     "debug": "~2.6.9",
