@@ -9,4 +9,4 @@ console.log('DOTENV RESULT:', result);
 console.log('JWT_EXPIRES_IN:', process.env.JWT_EXPIRES_IN);
 console.log('JWT_SECRET:', process.env.JWT_SECRET);
 
-export const { PORT, NODE_ENV, DB_URI, JWT_SECRET, JWT_EXPIRES_IN } = process.env;
+export const { PORT, NODE_ENV, DB_URI, JWT_SECRET, JWT_EXPIRES_IN, ARCJET_ENV, ARCJET_KEY } = process.env;
