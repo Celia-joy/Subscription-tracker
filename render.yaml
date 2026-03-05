@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: subscription-tracker
+    env: node
+    buildCommand: npm install
+    startCommand: node app.js
+    envVars:
+      - key: NODE_ENV
+        value: production
+
